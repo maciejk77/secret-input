@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BASE_PATH } from '../constants';
+import { BASE_PATH, SECRET } from '../constants';
 
 const useSubmit = () => {
   const [loading, setIsLoading] = useState(false);
@@ -8,7 +8,6 @@ const useSubmit = () => {
 
   const handleBlur = async (e) => {
     const { value } = e.target;
-    const variant = Math.random(); // move to helper file
 
     const submitInputValue = async () => {
       setIsLoading(true);
@@ -34,9 +33,7 @@ const useSubmit = () => {
       setError(true);
     };
 
-    // to be refactored to implement A/B split,
-    // random number 0-1 at the moment
-    if (variant <= 0.5) {
+    if (value === SECRET) {
       handleSuccess();
     } else {
       handleFailure();
