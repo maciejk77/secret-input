@@ -3,6 +3,7 @@ import runServer from './server';
 import useInput from './hooks/useInput';
 import useSubmit from './hooks/useSubmit';
 import useData from './hooks/useData';
+import { Spinner, SuccessIcon, FailureIcon } from './icons';
 
 // 2000ms delayed
 runServer();
@@ -12,20 +13,44 @@ const App = () => {
   const { loading, isSuccess, error, handleBlur } = useSubmit();
   const { fetchData } = useData();
 
+  const isShowingError = !loading && error;
+  const isShowingSuccess = !loading && isSuccess;
+
   useEffect(() => {
     loading && fetchData();
   }, [fetchData, loading]);
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
-        <input value={inputValue} onChange={handleChange} onBlur={handleBlur} />
-        <div>{loading && <> loading... </>}</div>
+      <div style={styles.inputRow}>
+        <input
+          onChange={handleChange}
+          onBlur={handleBlur}
+          style={styles.input}
+          value={inputValue}
+        />
+        <div>{loading && <Spinner />}</div>
+        <div>{isShowingSuccess && <SuccessIcon />}</div>
+        <div>{isShowingError && <FailureIcon />}</div>
       </div>
-      <div>{!loading && isSuccess && <>&#9989;</>}</div>
-      <div>{!loading && error && <>{error}</>}</div>
+
+      <div>{isShowingError && <div style={styles.error}>{error}</div>}</div>
     </>
   );
+};
+
+const styles = {
+  inputRow: { display: 'flex', alignItems: 'center' },
+  input: {
+    border: '2px solid lightgray',
+    outline: 'none',
+    padding: 5,
+  },
+  error: {
+    fontFamily: 'Verdana',
+    fontSize: 10,
+    paddingTop: 5,
+  },
 };
 
 export default App;
