@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BASE_PATH, SECRET } from '../constants';
+import { BASE_PATH, SECRET, ERROR_MESSAGE } from '../constants';
 
 const useSubmit = () => {
   const [loading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ const useSubmit = () => {
       submitInputValue();
 
       setIsSuccess(false);
-      setError(true);
+      setError(ERROR_MESSAGE);
     };
 
     if (value === SECRET) {

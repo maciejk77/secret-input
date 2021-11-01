@@ -4,6 +4,7 @@ import useInput from './hooks/useInput';
 import useSubmit from './hooks/useSubmit';
 import useData from './hooks/useData';
 
+// 2000ms delayed
 runServer();
 
 const App = () => {
@@ -22,7 +23,7 @@ const App = () => {
         <div>{loading && <> loading... </>}</div>
       </div>
       <div>{!loading && isSuccess && <>&#9989;</>}</div>
-      <div>{!loading && error && <>&#x26A0;</>}</div>
+      <div>{!loading && error && <>{error}</>}</div>
     </>
   );
 };
