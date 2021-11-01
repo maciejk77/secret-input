@@ -1,69 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Server } from 'miragejs';
+import React, { useEffect } from 'react';
+import runServer from './server';
+import useInput from './hooks/useInput';
+import useSubmit from './hooks/useSubmit';
+import useData from './hooks/useData';
 
-let server = new Server({ timing: 2000 });
-server.get('/api/input', {});
-server.post('/api/input', (_, request) => {
-  return JSON.parse(request.requestBody);
-});
+runServer();
 
 const App = () => {
-  const [loading, setIsLoading] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [isSuccess, setIsSuccess] = useState(null);
-  const [error, setError] = useState(null);
-
-  const fetchData = async () => {
-    await fetch('/api/input').then((json) => {
-      const data = JSON.parse(json._bodyInit);
-      setInputValue(data.text);
-    });
-  };
+  const { handleChange, inputValue } = useInput();
+  const { loading, isSuccess, error, handleBlur } = useSubmit();
+  const { fetchData } = useData();
 
   useEffect(() => {
     loading && fetchData();
-  }, [loading]);
-
-  const handleChange = (e) => {
-    const { value } = e.target;
-    setInputValue(value);
-  };
-
-  const handleBlur = async (e) => {
-    const { value } = e.target;
-
-    const variant = Math.random();
-
-    const submitInputValue = async () => {
-      setIsLoading(true);
-      await fetch('/api/input', {
-        method: 'POST',
-        body: JSON.stringify({ input: value }),
-      });
-
-      setIsLoading(false);
-    };
-
-    const handleSuccess = () => {
-      submitInputValue();
-
-      setIsSuccess(true);
-      setError(false);
-    };
-
-    const handleFailure = () => {
-      submitInputValue();
-
-      setIsSuccess(false);
-      setError(true);
-    };
-
-    if (variant <= 0.5) {
-      handleSuccess();
-    } else {
-      handleFailure();
-    }
-  };
+  }, [fetchData, loading]);
 
   return (
     <>
